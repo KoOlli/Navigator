@@ -12,6 +12,8 @@ class GraphAlgorithms {
   std::vector<int> DepthFirstSearch(s21::Graph graph, int startVertex);
   std::vector<int> BreadthFirstSearch(Graph graph, int startVertex);
   int GetShortestPathBetweenVertices(Graph graph, int vertex1, int vertex2);
+  std::vector<std::vector<int>> GetShortestPathsBetweenAllVertices(Graph graph);
+  std::vector<std::vector<int>> GetLeastSpanningTree(Graph graph);
 
  private:
   s21::stack<int> stack;

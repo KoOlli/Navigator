@@ -44,9 +44,11 @@ void CheckInput() {
   int startPoint = 0;
   int oneVertex = 0;
   int twoVertex = 0;
-  s21::Graph *graph = new s21::Graph(1);
+  s21::Graph graph = s21::Graph(1);
   s21::GraphAlgorithms *algorithms = new s21::GraphAlgorithms();
   bool isMenu = true;
+  std::vector<std::vector<int>> shortestPaths;
+  std::vector<std::vector<int>> leastSpanningTree;
   // std::vector<int> v;
   while (isMenu) {
     Print();
@@ -55,14 +57,14 @@ void CheckInput() {
 
     switch (menuNumber) {
       case 1:
-        graph->LoadGraphFromFile("test.txt");
-        PrintGrath(*graph);
+        graph.LoadGraphFromFile("test.txt");
+        PrintGrath(graph);
         break;
       case 2:
         std::cout << "Enter start point: ";
         std::cin >> startPoint;  // нужно добавить проверку на выход за массив
         std::cout << "\n";
-        for (auto elem : algorithms->DepthFirstSearch(*graph, startPoint))
+        for (auto elem : algorithms->DepthFirstSearch(graph, startPoint))
           std::cout << elem << " -> ";
         std::cout << std::endl;
         break;
@@ -70,7 +72,7 @@ void CheckInput() {
         std::cout << "Enter start point: ";
         std::cin >> startPoint;  // нужно добавить проверку на выход за массив
         std::cout << "\n";
-        for (auto elem : algorithms->BreadthFirstSearch(*graph, startPoint))
+        for (auto elem : algorithms->BreadthFirstSearch(graph, startPoint))
           std::cout << elem << " -> ";
         std::cout << std::endl;
         break;
@@ -80,18 +82,31 @@ void CheckInput() {
         std::cout << "Enter two vertex: ";
         std::cin >> twoVertex;  // нужно добавить проверку на выход за массив
         std::cout << algorithms->GetShortestPathBetweenVertices(
-                         *graph, oneVertex, twoVertex)
+                         graph, oneVertex, twoVertex)
                   << std::endl;
         break;
-      // case 5:
-      //     s21::
-      //     break;
-      // case 6:
-      //     s21::
-      //     break;
+      case 5:
+        shortestPaths = algorithms->GetShortestPathsBetweenAllVertices(graph);
+
+        for (int i = 0; i < graph.getVertexCount(); i++) {
+          for (int j = 0; j < graph.getVertexCount(); j++) {
+            std::cout << shortestPaths[i][j] << "\t";
+          }
+          std::cout << std::endl;
+        }
+        break;
+      case 6:
+        leastSpanningTree = algorithms->GetLeastSpanningTree(graph);
+
+        for (int i = 0; i < graph.getVertexCount(); i++) {
+          for (int j = 0; j < graph.getVertexCount(); j++) {
+            std::cout << leastSpanningTree[i][j] << "\t";
+          }
+          std::cout << std::endl;
+        }
+        break;
       // case 7:
-      //     s21::
-      //     break;
+      //   s21::break;
       case 0:
         isMenu = false;
         std::cout << "Quit" << std::endl;
@@ -107,7 +122,7 @@ void CheckInput() {
 void PrintGrath(s21::Graph graph) {
   for (int i = 0; i < graph.getVertexCount(); i++) {
     for (int j = 0; j < graph.getVertexCount(); j++) {
-      std::cout << graph.getEdge(i, j) << ", ";
+      std::cout << graph.getEdge(i, j) << "\t";
     }
     std::cout << std::endl;
   }
