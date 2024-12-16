@@ -1,5 +1,5 @@
-#ifndef S21_CONTAINERS_S21_LIST_H_
-#define S21_CONTAINERS_S21_LIST_H_
+#ifndef A2_SIMPLE_NAVIGATOR_V1_0_CPP_1_CONTAINERS_S21_LIST_H_
+#define A2_SIMPLE_NAVIGATOR_V1_0_CPP_1_CONTAINERS_S21_LIST_H_
 
 #include <initializer_list>
 #include <iostream>
@@ -18,8 +18,8 @@ class list {
  public:
   class ListIterator : public std::iterator<std::input_iterator_tag, int> {
    public:
-    ListIterator(NodeList<T> *x) : elem_(x){};
-    ListIterator(const ListIterator &li) : elem_(li.elem_){};
+    ListIterator(NodeList<T> *x) : elem_(x) {};
+    ListIterator(const ListIterator &li) : elem_(li.elem_) {};
     ListIterator &operator++() {
       elem_ = elem_->next;
       return *this;
@@ -390,4 +390,4 @@ void s21::list<T>::Copy(const list<T> &l) {
   }
 }
 
-#endif  // S21_CONTAINERS_S21_LIST_H_
+#endif  // A2_SIMPLE_NAVIGATOR_V1_0_CPP_1_CONTAINERS_S21_LIST_H_

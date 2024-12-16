@@ -1,87 +1,99 @@
 #include "s21_graph.h"
 
-s21::Graph::Graph(int size) {
-  vertexCount_ = size;
-  adjacencyMatrix_ = new int*[vertexCount_];
-  for (int i = 0; i < vertexCount_; ++i) {
-    adjacencyMatrix_[i] =
-        new int[vertexCount_];  // или инициализация значениями, например, 0
-    std::fill(adjacencyMatrix_[i], adjacencyMatrix_[i] + vertexCount_,
-              0);  // Инициализация нулями
+s21::Graph::Graph(int size) : vertex_count_(size) {
+  adjacency_matrix_ = new int*[vertex_count_];
+  for (int i = 0; i < vertex_count_; ++i) {
+    adjacency_matrix_[i] = new int[vertex_count_];
+    std::fill(adjacency_matrix_[i], adjacency_matrix_[i] + vertex_count_, 0);
   }
 }
 
-void s21::Graph::LoadGraphFromFile(const std::string& filename) {
-  std::ifstream inFile(filename);
-  if (!inFile.is_open()) {
+bool s21::Graph::LoadGraphFromFile(const std::string& filename) {
+  std::ifstream file(filename);
+  if (!file.is_open()) {
     std::cerr << "Could not open the file: " << filename << std::endl;
-    return;
+    return false;
   }
-
+  ClearGraph();
   std::string line;
-  if (std::getline(inFile, line)) {
-    vertexCount_ = std::stoi(line);
-    // Инициализация матрицы смежности
-    adjacencyMatrix_ = new int*[vertexCount_];
-    for (int i = 0; i < vertexCount_; ++i) {
-      adjacencyMatrix_[i] = new int[vertexCount_]();
+  if (std::getline(file, line)) {
+    vertex_count_ = std::stoi(line);
+
+    adjacency_matrix_ = new int*[vertex_count_];
+    for (int i = 0; i < vertex_count_; ++i) {
+      adjacency_matrix_[i] = new int[vertex_count_]();
     }
   }
 
-  int rowIndex = 0;
-  while (std::getline(inFile, line) && rowIndex < vertexCount_) {
+  int row = 0;
+  while (std::getline(file, line) && row < vertex_count_) {
     std::istringstream ss(line);
-    for (int colIndex = 0; colIndex < vertexCount_; ++colIndex) {
-      ss >> adjacencyMatrix_[rowIndex][colIndex];
+    for (int col = 0; col < vertex_count_; ++col) {
+      ss >> adjacency_matrix_[row][col];
     }
-    rowIndex++;
+    row++;
   }
 
-  inFile.close();
+  file.close();
+  return true;
 }
 
-void s21::Graph::ExportGraphToDot(const std::string& filename) {
-  bool isDirected = IsDirected();
-  std::ofstream outFile(filename);
-  if (!outFile.is_open()) {
+bool s21::Graph::ExportGraphToDot(const std::string& filename) {
+  bool is_directed = IsDirected();
+  std::ofstream file(filename);
+  if (!file.is_open()) {
     std::cerr << "Could not open the file: " << filename << std::endl;
-    return;
+    return false;
   }
 
-  // Выводим имя графа
-  std::string graphType = isDirected ? "digraph" : "graph";
-  outFile << graphType << " graphname {\n";
+  std::string graph_type = is_directed ? "digraph" : "graph";
+  file << graph_type << " graphname {\n";
 
-  // Добавляем вершины
-  for (int i = 0; i < vertexCount_; i++) {
-    outFile << "    " << (i + 1) << ";\n";
+  for (int i = 0; i < vertex_count_; ++i) {
+    file << "    " << (i + 1) << ";\n";
   }
 
-  // Добавляем рёбра
-  for (int i = 0; i < vertexCount_; i++) {
-    for (int j = 0; j < vertexCount_; j++) {
-      if (adjacencyMatrix_[i][j] != 0) {
-        if (isDirected) {
-          outFile << "    " << (i + 1) << " -> " << (j + 1) << ";\n";
+  for (int i = 0; i < vertex_count_; ++i) {
+    for (int j = 0; j < vertex_count_; ++j) {
+      if (adjacency_matrix_[i][j] != 0) {
+        if (is_directed) {
+          file << "    " << (i + 1) << " -> " << (j + 1) << ";\n";
         } else {
-          outFile << "    " << (i + 1) << " -- " << (j + 1) << ";\n";
+          file << "    " << (i + 1) << " -- " << (j + 1) << ";\n";
         }
       }
     }
   }
 
-  outFile << "}\n";
-  outFile.close();
+  file << "}\n";
+  file.close();
+  return true;
 }
 
 bool s21::Graph::IsDirected() const {
-  // Реализуйте метод, который определяет, является ли граф направленным или
-  // нет.
-  return false;  // Например, по умолчанию определим как ненаправленный.
+  for (int i = 0; i < vertex_count_; ++i) {
+    for (int j = 0; j < vertex_count_; ++j) {
+      if (adjacency_matrix_[i][j] != adjacency_matrix_[j][i]) {
+        return true;
+      }
+    }
+  }
+  return false;
 }
 
-int s21::Graph::getVertexCount() { return vertexCount_; }
+int s21::Graph::GetVertexCount() { return vertex_count_; }
 
-int s21::Graph::getEdge(int src, int dest) {
-  return adjacencyMatrix_[src][dest];
+int s21::Graph::GetEdge(int row, int col) {
+  return adjacency_matrix_[row][col];
+}
+
+void s21::Graph::ClearGraph() {
+  if (adjacency_matrix_) {
+    for (int i = 0; i < vertex_count_; ++i) {
+      delete[] adjacency_matrix_[i];
+    }
+    delete[] adjacency_matrix_;
+  }
+  adjacency_matrix_ = nullptr;
+  vertex_count_ = 0;
 }

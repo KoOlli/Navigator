@@ -1,5 +1,5 @@
-#ifndef S21_SIMPLE_NAVIGATOR_S21_GRATH__H_
-#define S21_SIMPLE_NAVIGATOR_S21_GRATH__H_
+#ifndef A2_SIMPLE_NAVIGATOR_V1_0_CPP_1_S21_GRAPH_H_
+#define A2_SIMPLE_NAVIGATOR_V1_0_CPP_1_S21_GRAPH_H_
 
 #include <fstream>
 #include <sstream>
@@ -15,17 +15,18 @@ class Graph {
  public:
   Graph(int size);
 
-  void LoadGraphFromFile(const std::string& filename);
-  void ExportGraphToDot(const std::string& filename);
+  bool LoadGraphFromFile(const std::string& filename);
+  bool ExportGraphToDot(const std::string& filename);
   bool IsDirected() const;
 
-  int getVertexCount();
-  int getEdge(int src, int dest);
+  int GetVertexCount();
+  int GetEdge(int row, int col);
+  void ClearGraph();
 
  private:
-  int** adjacencyMatrix_;
-  int vertexCount_;
+  int** adjacency_matrix_;
+  int vertex_count_;
 };
 }  // namespace s21
 
-#endif  // S21_SIMPLE_NAVIGATOR_S21_GRATH__H_
+#endif  // A2_SIMPLE_NAVIGATOR_V1_0_CPP_1_S21_GRAPH_H_
